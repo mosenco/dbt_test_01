@@ -39,6 +39,20 @@ final as (
 
     left join customer_orders using (customer_id)
 
-)
+),
 
-select * from final
+customer_amount_table as (
+    select 
+        customer_id,
+        sum(amount) as lifetime_value
+    from {{ ref('fct_orders') }}
+    group by customer_id
+),
+
+final2 as (
+    select *
+    from final
+    left join 
+    customer_amount_table using(customer_id)
+)
+select * from final2
